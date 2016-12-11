@@ -27,12 +27,14 @@ snake.move = (direction) => {
       alert("Self Collision!!! Game Over");
       snake.init();
     }else if(mesh.mesh[mesh.mesh[snake.nodes[0]][direction]].element.fill){
+        mesh.mesh[snake.nodes[0]].element.innerHTML = '';
         mesh.mesh[mesh.mesh[snake.nodes[0]][direction]].unFillRandomNode();
-        mesh.mesh[mesh.mesh[snake.nodes[0]][direction]].fillNode();
+        mesh.mesh[mesh.mesh[snake.nodes[0]][direction]].fillNode(true);
         snake.nodes.unshift(mesh.mesh[snake.nodes[0]][direction]);
         mesh.generateRandomBlock();
     }else{
-      mesh.mesh[mesh.mesh[snake.nodes[0]][direction]].fillNode();
+      mesh.mesh[mesh.mesh[snake.nodes[0]][direction]].fillNode(true);
+      mesh.mesh[snake.nodes[0]].element.innerHTML = '';
       snake.nodes.unshift(mesh.mesh[snake.nodes[0]][direction]);
 
       //Removing the last node
@@ -51,7 +53,7 @@ document.addEventListener('keydown',snake.keyDownChooser);
 function Node(i,j,nodeNumber,m,n){
   var div = document.createElement("DIV");
   div.classList.add('node');
-  div.innerHTML = nodeNumber;
+  //div.innerHTML = nodeNumber;
   this.element = div;
   if(i == 1 && j == 1){
       this.right = nodeNumber + 1;
@@ -98,8 +100,11 @@ function Node(i,j,nodeNumber,m,n){
   }
 };
 
-Node.prototype.fillNode = function(){
+Node.prototype.fillNode = function(isHead){
   this.element.classList.add('fill');
+  if(isHead) {
+    this.element.innerHTML = 'H';
+  }
   this.element.fill = true;
 };
 
@@ -115,6 +120,7 @@ Node.prototype.unFillRandomNode = function(){
 
 Node.prototype.unfillNode = function(){
   this.element.classList.remove('fill');
+  this.element.innerHTML = '';
   this.element.fill = false;
 };
 
@@ -153,7 +159,7 @@ mesh.renderMesh = function (){
   }
   document.body.appendChild(divContainer);
 
-  mesh[1].fillNode();
+  mesh[1].fillNode(true); //Head Node
 };
 
 mesh.generateRandomBlock = function(){
